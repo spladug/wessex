@@ -1,14 +1,8 @@
-import os
 import urllib
 import urllib2
 import urlparse
 
-__all__ = []
-
-TIMEOUT = 3
-
-def _url_path_join(*components):
-    return urllib.pathname2url(os.path.join(*components))
+__all__ = ['Harold']
 
 class Harold(object):
     def __init__(self, host, secret, port=80, timeout=3):
@@ -19,7 +13,7 @@ class Harold(object):
 
     def _post_to_harold(self, path, data):
         path_components = ['harold'] + path + [self.secret]
-        combined_path = _url_path_join(*path_components)
+        combined_path = '/'.join(path_components)
         netloc = "%s:%d" % (self.host, self.port)
         url = urlparse.urlunsplit(("http", netloc, combined_path, None, None))
         encoded_data = urllib.urlencode(data)
