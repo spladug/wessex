@@ -3,6 +3,7 @@ import urllib2
 import urlparse
 
 __all__ = ['Harold']
+__version__ = '1.0.0'
 
 class Harold(object):
     def __init__(self, host, secret, port=80, timeout=3):
