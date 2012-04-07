@@ -3,7 +3,7 @@ import urllib2
 import urlparse
 
 __all__ = ['Harold']
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 class Harold(object):
     def __init__(self, host, secret, port=80, timeout=3):
@@ -41,6 +41,9 @@ class Harold(object):
     def get_irc_channel(self, channel):
         return IrcChannel(self, channel)
 
+    def get_deploy(self, id):
+        return Deploy(self, id)
+
 
 class IrcChannel(object):
     def __init__(self, harold, channel):
@@ -65,11 +68,47 @@ class IrcChannel(object):
             }
         )
 
-    def restore_topic(self):
+
+class Deploy(object):
+    def __init__(self, harold, id):
+        self.harold = harold
+        self.id = id
+
+    def begin(self, who, args, log_path, host_count):
         self.harold._post_to_harold(
-            ["topic", "restore"],
+            ["deploy", "begin"],
             {
-                "channel": self.channel,
+                "id": self.id,
+                "who": who,
+                "args": args,
+                "log_path": log_path,
+                "count": host_count
             }
         )
 
+    def end(self):
+        self.harold._post_to_harold(
+            ["deploy", "end"],
+            {
+                "id": self.id,
+            }
+        )
+
+    def abort(self, reason):
+        self.harold._post_to_harold(
+            ["deploy", "abort"],
+            {
+                "id": self.id,
+                "reason": reason,
+            }
+        )
+
+    def progress(self, host, index):
+        self.harold._post_to_harold(
+            ["deploy", "progress"],
+            {
+                "id": self.id,
+                "host": host,
+                "index": index,
+            }
+        )
