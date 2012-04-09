@@ -3,7 +3,8 @@ import urllib2
 import urlparse
 
 __all__ = ['Harold']
-__version__ = '1.1.0'
+__version__ = '1.2.0'
+
 
 class Harold(object):
     def __init__(self, host, secret, port=80, timeout=3):
@@ -112,3 +113,28 @@ class Deploy(object):
                 "index": index,
             }
         )
+
+
+def connect_harold(config="/etc/harold.ini"):
+    """Creates a Harold object based on configuration in the given
+    configuration file"""
+    import ConfigParser
+
+    parser = ConfigParser.RawConfigParser()
+    with open("/etc/harold.ini", "r") as f:
+        parser.readfp(f)
+
+    host = parser.get("harold", "host")
+    secret = parser.get("harold", "secret")
+
+    if parser.has_option("harold", "port"):
+        port = parser.getint("harold", "port")
+    else:
+        port = 8888
+
+    if parser.has_option("harold", "timeout"):
+        timeout = parser.getint("harold", "timeout")
+    else:
+        timeout = 3
+
+    return Harold(host, secret, port, timeout)
