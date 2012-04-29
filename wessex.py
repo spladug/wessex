@@ -3,7 +3,7 @@ import urllib2
 import urlparse
 
 __all__ = ['Harold']
-__version__ = '1.2.0'
+__version__ = '1.3.0'
 
 
 class Harold(object):
@@ -138,3 +138,24 @@ def connect_harold(config="/etc/harold.ini"):
         timeout = 3
 
     return Harold(host, secret, port, timeout)
+
+
+def harold_irc():
+    import os
+    import sys
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Send a message to an IRC channel via Harold.")
+    parser.add_argument("channel", nargs=1, help="IRC channel to send message to")
+    parser.add_argument("message", nargs="+", help="Message to send.")
+    args = parser.parse_args()
+
+    try:
+        harold = connect_harold()
+        channel = harold.get_irc_channel(args.channel[0])
+        channel.message(" ".join(args.message))
+    except Exception, e:
+        print "%s: %s" % (os.path.basename(sys.argv[0]), e)
+        return 1
+
+    return 0
