@@ -3,7 +3,7 @@ import urllib2
 import urlparse
 
 __all__ = ['Harold']
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
 
 class Harold(object):
@@ -79,10 +79,10 @@ class Deploy(object):
         self.harold._post_to_harold(
             ["deploy", "begin"],
             {
-                "id": self.id,
+                "id": self.id.encode('utf-8'),
                 "who": who,
                 "args": args,
-                "log_path": log_path,
+                "log_path": log_path.encode('utf-8'),
                 "count": host_count
             }
         )
@@ -91,7 +91,7 @@ class Deploy(object):
         self.harold._post_to_harold(
             ["deploy", "end"],
             {
-                "id": self.id,
+                "id": self.id.encode('utf-8'),
             }
         )
 
@@ -99,7 +99,7 @@ class Deploy(object):
         self.harold._post_to_harold(
             ["deploy", "abort"],
             {
-                "id": self.id,
+                "id": self.id.encode('utf-8'),
                 "reason": reason,
             }
         )
@@ -108,7 +108,7 @@ class Deploy(object):
         self.harold._post_to_harold(
             ["deploy", "progress"],
             {
-                "id": self.id,
+                "id": self.id.encode('utf-8'),
                 "host": host,
                 "index": index,
             }
