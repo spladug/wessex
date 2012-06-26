@@ -147,13 +147,21 @@ def harold_irc():
 
     parser = argparse.ArgumentParser(description="Send a message to an IRC channel via Harold.")
     parser.add_argument("channel", nargs=1, help="IRC channel to send message to")
-    parser.add_argument("message", nargs="+", help="Message to send.")
+    parser.add_argument("message", nargs="*", help="Message to send.")
     args = parser.parse_args()
 
     try:
         harold = connect_harold()
         channel = harold.get_irc_channel(args.channel[0])
-        channel.message(" ".join(args.message))
+
+        if args.message:
+            channel.message(" ".join(args.message))
+        else:
+            while True:
+                line = sys.stdin.readline()
+                if not line:
+                    break
+                channel.message(line)
     except Exception, e:
         print "%s: %s" % (os.path.basename(sys.argv[0]), e)
         return 1
