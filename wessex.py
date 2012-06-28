@@ -3,7 +3,7 @@ import urllib2
 import urlparse
 
 __all__ = ['Harold']
-__version__ = '1.4.0'
+__version__ = '1.5.0'
 
 
 class Harold(object):
@@ -92,6 +92,15 @@ class Deploy(object):
             ["deploy", "end"],
             {
                 "id": self.id.encode('utf-8'),
+            }
+        )
+
+    def error(self, error):
+        self.harold._post_to_harold(
+            ["deploy", "error"],
+            {
+                "id": self.id.encode('utf-8'),
+                "error": error,
             }
         )
 
