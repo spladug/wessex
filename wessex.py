@@ -130,8 +130,7 @@ def connect_harold(config="/etc/harold.ini"):
     import ConfigParser
 
     parser = ConfigParser.RawConfigParser()
-    with open("/etc/harold.ini", "r") as f:
-        parser.readfp(f)
+    parser.read(config)
 
     host = parser.get("harold", "host")
     secret = parser.get("harold", "secret")
