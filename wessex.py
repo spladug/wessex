@@ -3,7 +3,7 @@ import urllib
 import urllib2
 import urlparse
 
-__all__ = ['Harold']
+__all__ = ['Harold', 'connect_harold']
 __version__ = '1.5.0'
 
 
