@@ -129,23 +129,18 @@ def connect_harold(config="/etc/harold.ini"):
     configuration file"""
     import ConfigParser
 
-    parser = ConfigParser.RawConfigParser()
+    parser = ConfigParser.RawConfigParser({
+        "port": 8888,
+        "timeout": 3,
+    })
     files_read = parser.read(config)
     if not files_read:
         raise IOError("No config file found in: %r" % config)
 
     host = parser.get("harold", "host")
     secret = parser.get("harold", "secret")
-
-    if parser.has_option("harold", "port"):
-        port = parser.getint("harold", "port")
-    else:
-        port = 8888
-
-    if parser.has_option("harold", "timeout"):
-        timeout = parser.getint("harold", "timeout")
-    else:
-        timeout = 3
+    port = parser.getint("harold", "port")
+    timeout = parser.getint("harold", "timeout")
 
     return Harold(host, secret, port, timeout)
 
