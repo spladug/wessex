@@ -39,6 +39,7 @@ class Harold(object):
             data=body,
             timeout=self.timeout,
             headers={
+                "User-Agent": "/".join((__name__, __version__)),
                 "Content-Type": "application/x-www-form-urlencoded",
                 "X-Hub-Signature": "sha1=" + hash.hexdigest(),
             },
