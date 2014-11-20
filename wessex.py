@@ -1,7 +1,8 @@
 import posixpath
-import urllib
-import urllib2
 import urlparse
+
+import requests
+
 
 __all__ = ['Harold', 'connect_harold']
 __version__ = '1.5.0'
@@ -15,6 +16,7 @@ class Harold(object):
 
         self.secret = secret
         self.timeout = timeout
+        self.session = requests.Session()
 
     def _post_to_harold(self, path, data):
         combined_path = posixpath.join(self.path, "harold", path, self.secret)
@@ -26,11 +28,8 @@ class Harold(object):
             None,
         ))
 
-        urllib2.urlopen(
-            url,
-            data=urllib.urlencode(data),
-            timeout=self.timeout,
-        )
+        resp = self.session.post(url, data=data, timeout=self.timeout)
+        resp.raise_for_status()
 
     def alert(self, tag, message):
         self._post_to_harold("alert", {
