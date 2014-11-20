@@ -1,4 +1,7 @@
+import hashlib
+import hmac
 import posixpath
+import urllib
 import urlparse
 
 import requests
@@ -19,7 +22,7 @@ class Harold(object):
         self.session = requests.Session()
 
     def _post_to_harold(self, path, data):
-        combined_path = posixpath.join(self.path, "harold", path, self.secret)
+        combined_path = posixpath.join(self.path, "harold", path)
         url = urlparse.urlunsplit((
             self.scheme,
             self.netloc,
@@ -28,7 +31,18 @@ class Harold(object):
             None,
         ))
 
-        resp = self.session.post(url, data=data, timeout=self.timeout)
+        body = urllib.urlencode(data)
+        hash = hmac.new(self.secret, body, hashlib.sha1)
+
+        resp = self.session.post(
+            url,
+            data=body,
+            timeout=self.timeout,
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Hub-Signature": "sha1=" + hash.hexdigest(),
+            },
+        )
         resp.raise_for_status()
 
     def alert(self, tag, message):
@@ -120,7 +134,7 @@ def connect_harold(config="/etc/harold.ini"):
         raise IOError("No config file found in: %r" % config)
 
     url = parser.get("harold", "url")
-    secret = parser.get("harold", "secret")
+    secret = parser.get("harold", "hmac_secret")
     timeout = parser.getint("harold", "timeout")
 
     return Harold(url, secret, timeout)
