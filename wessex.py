@@ -163,8 +163,8 @@ def harold_irc():
                 if not line:
                     break
                 channel.message(line)
-    except Exception, e:
-        print "%s: %s" % (os.path.basename(sys.argv[0]), e)
+    except Exception as e:
+        print("%s: %s" % (os.path.basename(sys.argv[0]), e))
         return 1
 
     return 0
